@@ -8,16 +8,18 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".ExperimentInstructionsActivity">
+        android:theme="@style/Theme.AppCompat.NoActionBar">
+        <activity android:name=".Presentation.ExperimentInstructionsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ThumbInstructionsActivity" />
-        <activity android:name=".BreakInstructionsActivity" />
-        <activity android:name=".IndexFingerInstructionsActivity" />
+        <activity android:name=".Presentation.ThumbInstructionsActivity" />
+        <activity android:name=".Presentation.BreakInstructionsActivity" />
+        <activity android:name=".Presentation.IndexFingerInstructionsActivity" />
+        <activity android:name=".Presentation.ClosingRemarksActivity" />
+        <activity android:name=".Presentation.TappingActivity" />
     </application>
 
 </manifest>
