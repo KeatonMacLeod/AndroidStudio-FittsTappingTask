@@ -15,7 +15,11 @@
             android:id="@+id/start_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="103dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="54dp"
+            android:layout_marginRight="54dp"
+            android:layout_toLeftOf="@+id/square_target"
+            android:layout_toStartOf="@+id/square_target"
             android:width="150dp"
             android:height="75dp"
             android:text="@string/start" />

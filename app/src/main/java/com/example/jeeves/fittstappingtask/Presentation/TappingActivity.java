@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -25,8 +24,8 @@ import java.util.Random;
 
 public class TappingActivity extends AppCompatActivity {
 
-    private int SCREEN_WIDTH = 400;
-    private int SCREEN_HEIGHT = 1700;
+    private int SCREEN_WIDTH = 700;
+    private int SCREEN_HEIGHT = 2000;
     private String device;
     private DataWriter dataWriter;
     private int attemptedTrials;
@@ -71,11 +70,14 @@ public class TappingActivity extends AppCompatActivity {
     // causes the beginTrials function to be called. This pattern continues until all the necessary trials have been completed.
     private void beginTrials() {
 
-        if (trialList.size() == 0) {
-            if (device.equals("thumb")) {
+        if (trialList.size() == 0)
+        {
+            if (device.equals("thumb"))
+            {
                 startActivity(new Intent(TappingActivity.this, BreakInstructionsActivity.class));
             }
-            else if (device.equals("index")) {
+            else if (device.equals("index"))
+            {
                 startActivity(new Intent(TappingActivity.this, ClosingRemarksActivity.class));
             }
         }
@@ -125,7 +127,8 @@ public class TappingActivity extends AppCompatActivity {
 
                         dataWriter.appendResultsToFile(trialData);
                         idCombination.incrementAttempted();
-                        if (idCombination.completedAllTrials()) {
+                        if (idCombination.completedAllTrials())
+                        {
                             trialList.remove(idCombination);
                         }
                         beginTrials();
@@ -175,39 +178,51 @@ public class TappingActivity extends AppCompatActivity {
         boolean targetBelow = false;
 
         // Indicates that the target can be placed above the startButton
-        if (startButtonPosition.getY() - idCombination.getAmplitude() > idCombination.getWidth() / 2) {
+        if (startButtonPosition.getY() - idCombination.getAmplitude() > idCombination.getWidth() / 2)
+        {
             targetAbove = true;
         }
 
         // Indicates that the target can be placed below the startButton
-        if (startButtonPosition.getY() + idCombination.getAmplitude() < SCREEN_HEIGHT - idCombination.getWidth() / 2) {
+        if (startButtonPosition.getY() + idCombination.getAmplitude() < SCREEN_HEIGHT - idCombination.getWidth() / 2)
+        {
             targetBelow = true;
         }
 
+        float xPosition = startButtonPosition.getX();
         float yPosition;
 
-        if (targetAbove && targetBelow) {
+        if (targetAbove && targetBelow)
+        {
             Random random = new Random();
-            if (random.nextBoolean()) {
+            if (random.nextBoolean())
+            {
                 yPosition = startButtonPosition.getY() - idCombination.getAmplitude();
             }
-            else {
+            else
+            {
                 yPosition = startButtonPosition.getY() + idCombination.getAmplitude();
             }
         }
-
-        else if (targetAbove) {
+        else if (targetAbove)
+        {
             yPosition = startButtonPosition.getY() - idCombination.getAmplitude();
         }
-
-        else {
+        else
+        {
             yPosition = startButtonPosition.getY() + idCombination.getAmplitude();
         }
 
+        if (startButtonPosition.getX() - idCombination.getWidth() < idCombination.getWidth() * 2) {
+            xPosition += idCombination.getWidth();
+        }
+        else if (startButtonPosition.getX() + idCombination.getWidth() > SCREEN_WIDTH - idCombination.getWidth() * 2) {
+            xPosition -= idCombination.getWidth();
+        }
 
         squareTarget.getLayoutParams().height = idCombination.getWidth();
         squareTarget.getLayoutParams().width = idCombination.getWidth();
-        squareTarget.setX(startButtonPosition.getX());
+        squareTarget.setX(xPosition);
         squareTarget.setY(yPosition);
     }
 
