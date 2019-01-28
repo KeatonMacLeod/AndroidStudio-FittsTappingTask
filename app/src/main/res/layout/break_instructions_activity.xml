@@ -17,6 +17,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="85dp"
+            android:textSize="18sp"
             android:text="@string/break_instructions" />
 
         <Button

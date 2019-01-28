@@ -21,13 +21,15 @@ public class ThumbInstructionsActivity extends AppCompatActivity {
         setContentView(R.layout.thumb_instructions_activity);
 
         //Construct the state object used for the thumb tapping activity
-        
+        String device = "thumb";
+        final Intent intent = new Intent(this, TappingActivity.class);
+        intent.putExtra("device", device);
 
         Button nextButton = (Button)findViewById(R.id.thumb_instructions_begin_trials_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ThumbInstructionsActivity.this, TappingActivity.class));
+                startActivity(intent);
             }
         });
     }

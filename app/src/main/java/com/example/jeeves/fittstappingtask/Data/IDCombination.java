@@ -11,8 +11,8 @@ public class IDCombination {
         this.amplitude = amplitude;
     }
 
-    public boolean finishedTrial() {
-        return attempted >= trialCount;
+    public boolean completedAllTrials() {
+        return attempted >= 1;
     }
 
     public int getTotal() {
@@ -45,5 +45,13 @@ public class IDCombination {
 
     public void setWidth(int width) {
         this.width = width;
+    }
+
+    public void incrementAttempted() {
+        attempted += 1;
+    }
+
+    public void incrementTrialCount() {
+        trialCount += 1;
     }
 }

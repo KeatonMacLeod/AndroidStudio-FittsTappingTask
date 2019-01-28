@@ -12,13 +12,15 @@
 
         <TextView
             android:id="@+id/closing_remarks_text_view_1"
-            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="119dp"
-            android:text="@string/closing_remarks" />
+            android:layout_marginTop="188dp"
+            android:gravity="center"
+            android:text="@string/closing_remarks"
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/imageView"

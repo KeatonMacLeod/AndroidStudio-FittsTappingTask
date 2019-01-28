@@ -22,11 +22,16 @@ public class IndexFingerInstructionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.index_finger_instructions_activity);
 
+        //Construct the state object used for the thumb tapping activity
+        String device = "index";
+        final Intent intent = new Intent(this, TappingActivity.class);
+        intent.putExtra("device", device);
+
         Button nextButton = (Button)findViewById(R.id.index_finger_begin_trials_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(IndexFingerInstructionsActivity.this, ClosingRemarksActivity.class));
+                startActivity(intent);
             }
         });
     }

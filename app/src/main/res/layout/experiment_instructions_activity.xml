@@ -19,7 +19,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="62dp"
             android:text="@string/welcome"
-            android:textSize="24sp"
+            android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:layout_editor_absoluteY="56dp" />
@@ -33,7 +33,7 @@
             android:layout_alignParentStart="true"
             android:gravity="center"
             android:text="@string/experiment_instructions"
-            android:textSize="14sp" />
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/experiment_instructions_next_button"
