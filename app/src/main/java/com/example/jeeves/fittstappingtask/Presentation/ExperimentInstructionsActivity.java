@@ -24,7 +24,7 @@ public class ExperimentInstructionsActivity extends AppCompatActivity {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ExperimentInstructionsActivity.this, ThumbInstructionsActivity.class));
+                startActivity(new Intent(ExperimentInstructionsActivity.this, Choose_Screen.class));
             }
         });
     }
