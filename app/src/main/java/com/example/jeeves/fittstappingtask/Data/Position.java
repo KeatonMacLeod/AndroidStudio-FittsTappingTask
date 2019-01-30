@@ -18,7 +18,7 @@ public class Position {
     }
 
     public float getY() {
-        return y;
+        return y + 63;
     }
 
     public void setY(int y) {

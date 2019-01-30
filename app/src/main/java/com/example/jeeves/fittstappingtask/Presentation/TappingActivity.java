@@ -19,6 +19,8 @@ import com.example.jeeves.fittstappingtask.R;
 import java.util.ArrayList;
 import java.util.Random;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /*
  * This is the activity used to display the tapping tasks for the user so data can be collected about
  * the "device" they are using to tap on targets.
@@ -26,8 +28,8 @@ import java.util.Random;
 
 public class TappingActivity extends AppCompatActivity {
 
-    private int SCREEN_WIDTH = 700;
-    private int SCREEN_HEIGHT = 2000;
+    private int SCREEN_WIDTH = 650;
+    private int SCREEN_HEIGHT = 1850;
     private String device;
     private DataWriter dataWriter;
     private int attemptedTrials;
@@ -36,8 +38,9 @@ public class TappingActivity extends AppCompatActivity {
     private int[] amplitudes;
     private Resources resources;
     private ArrayList<IDCombination> trialList;
-    private Button startButton;
-    private ImageView squareTarget;
+
+    private CircleImageView startButton;
+    private CircleImageView squareTarget;
     private RelativeLayout relativeLayout;
 
     @Override
@@ -47,8 +50,8 @@ public class TappingActivity extends AppCompatActivity {
         dataWriter = new DataWriter(this, "experiment-results.txt");
         attemptedTrials = 0;
         totalTrials = 90;
-        widths = new int[]{150, 250, 350};
-        amplitudes = new int[]{400, 600, 800};
+        widths = new int[]{175, 245, 300};
+        amplitudes = new int[]{500, 700, 900};
         resources = this.getResources();
         trialList = new ArrayList<>();
         super.onCreate(savedInstanceState);
@@ -101,6 +104,8 @@ public class TappingActivity extends AppCompatActivity {
                 // Get a random ID combination that still needs additional trials
                 Random random = new Random();
                 final IDCombination idCombination = trialList.get(random.nextInt(trialList.size()));
+
+                System.out.println("AMPLITUDE: " + idCombination.getAmplitude() + ", " + "WIDTH: " + idCombination.getWidth());
 
                 startButton.setVisibility(View.GONE);
                 squareTarget.setVisibility(View.VISIBLE);
@@ -184,63 +189,57 @@ public class TappingActivity extends AppCompatActivity {
         float xPosition = random.nextFloat() * SCREEN_WIDTH;
         float yPosition = random.nextFloat() * SCREEN_HEIGHT;
 
+        int[] location = new int[2];
         view.setX(xPosition);
         view.setY(yPosition);
+        view.getLocationInWindow(location);
 
         return new Position(xPosition, yPosition);
     }
 
-    private void setTargetPosition(Position startButtonPosition, IDCombination idCombination) {
-        boolean targetAbove = false;
-        boolean targetBelow = false;
+    private void setTargetPosition(Position startButton, IDCombination idCombination) {
+        Random random = new Random();
 
-        // Indicates that the target can be placed above the startButton
-        if (startButtonPosition.getY() - idCombination.getAmplitude() > idCombination.getWidth() / 2)
-        {
-            targetAbove = true;
-        }
+        boolean onScreen = false;
+        double amplitude = idCombination.getAmplitude();
+        float targetX = 200;
+        float targetY = 200;
+        double x;
+        double y;
 
-        // Indicates that the target can be placed below the startButton
-        if (startButtonPosition.getY() + idCombination.getAmplitude() < SCREEN_HEIGHT - idCombination.getWidth() / 2)
-        {
-            targetBelow = true;
-        }
+        // This could be optimized, but it's still instantaneous so it's most likely good enough for now
+        while (!onScreen) {
+            // Get a random x-value between (-amplitude, amplitude)
+            x = (float)(random.nextInt((int)(amplitude * 2 + 1)) - amplitude);
 
-        float xPosition = startButtonPosition.getX();
-        float yPosition;
+            // Compute the y-value such that the target will still be amplitude pixels away from the startButton
+            y = Math.sqrt(Math.pow(amplitude, 2) - Math.pow(x, 2));
 
-        if (targetAbove && targetBelow)
-        {
-            Random random = new Random();
-            if (random.nextBoolean())
-            {
-                yPosition = startButtonPosition.getY() - idCombination.getAmplitude();
+            // y = +-sqrt(r^2 - x^2)    -> This ensures we have a positive (above) or negative (below) option, and
+            // that we're not just looking at always spawning the target either above or below, but it is randomized
+            if (random.nextBoolean()) {
+                y = -y;
             }
-            else
-            {
-                yPosition = startButtonPosition.getY() + idCombination.getAmplitude();
-            }
-        }
-        else if (targetAbove)
-        {
-            yPosition = startButtonPosition.getY() - idCombination.getAmplitude();
-        }
-        else
-        {
-            yPosition = startButtonPosition.getY() + idCombination.getAmplitude();
-        }
 
-        if (startButtonPosition.getX() - idCombination.getWidth() < idCombination.getWidth() * 2) {
-            xPosition += idCombination.getWidth();
-        }
-        else if (startButtonPosition.getX() + idCombination.getWidth() > SCREEN_WIDTH - idCombination.getWidth() * 2) {
-            xPosition -= idCombination.getWidth();
+            // Set the target's position in relation to the current coordinates of the startButton
+            targetX = (float) (startButton.getX() + x);
+            targetY = (float) (startButton.getY() + y);
+
+            if (targetFullyOnScreen(targetX, targetY))
+                onScreen = true;
         }
 
         squareTarget.getLayoutParams().height = idCombination.getWidth();
         squareTarget.getLayoutParams().width = idCombination.getWidth();
-        squareTarget.setX(xPosition);
-        squareTarget.setY(yPosition);
+        squareTarget.setX(targetX);
+        squareTarget.setY(targetY);
+    }
+
+    private boolean targetFullyOnScreen(float targetX, float targetY) {
+        if (targetX >= 0 && targetX <= SCREEN_WIDTH && targetY >= 0 && targetY <= SCREEN_HEIGHT)
+            return true;
+        else
+            return false;
     }
 
 }
