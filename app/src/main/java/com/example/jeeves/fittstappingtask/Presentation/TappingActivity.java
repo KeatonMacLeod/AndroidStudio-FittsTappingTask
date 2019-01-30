@@ -30,6 +30,7 @@ public class TappingActivity extends AppCompatActivity {
 
     private int SCREEN_WIDTH = 650;
     private int SCREEN_HEIGHT = 1850;
+    private int feedbackDelay;
     private String device;
     private DataWriter dataWriter;
     private int attemptedTrials;
@@ -46,6 +47,7 @@ public class TappingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
+        feedbackDelay = 375;
         device = intent.getExtras().getString("device");
         dataWriter = new DataWriter(this, "experiment-results.txt");
         attemptedTrials = 0;
@@ -146,7 +148,7 @@ public class TappingActivity extends AppCompatActivity {
                                 }
                                 beginTrials();
                             }
-                        }, 1000);
+                        }, feedbackDelay);
                     }
                 });
 
@@ -173,7 +175,7 @@ public class TappingActivity extends AppCompatActivity {
                                 idCombination.incrementAttempted();
                                 beginTrials();
                             }
-                        }, 1000);
+                        }, feedbackDelay);
                     }
                 });
 
