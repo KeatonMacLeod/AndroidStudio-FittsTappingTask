@@ -17,6 +17,8 @@ import com.example.jeeves.fittstappingtask.R;
 import java.util.ArrayList;
 import java.util.Random;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /*
  * This is the activity used to display the tapping tasks for the user so data can be collected about
  * the "device" they are using to tap on targets.
@@ -34,8 +36,8 @@ public class TappingActivity extends AppCompatActivity {
     private int[] amplitudes;
     private Resources resources;
     private ArrayList<IDCombination> trialList;
-    private Button startButton;
-    private View squareTarget;
+    private CircleImageView startButton;
+    private CircleImageView squareTarget;
     private RelativeLayout relativeLayout;
 
     @Override
@@ -45,7 +47,7 @@ public class TappingActivity extends AppCompatActivity {
         dataWriter = new DataWriter(this, "experiment-results.txt");
         attemptedTrials = 0;
         totalTrials = 90;
-        widths = new int[]{150, 225, 300};
+        widths = new int[]{175, 245, 300};
         amplitudes = new int[]{500, 700, 900};
         resources = this.getResources();
         trialList = new ArrayList<>();
