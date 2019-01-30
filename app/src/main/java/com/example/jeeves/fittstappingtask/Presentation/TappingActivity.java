@@ -2,10 +2,12 @@ package com.example.jeeves.fittstappingtask.Presentation;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,7 +37,7 @@ public class TappingActivity extends AppCompatActivity {
     private Resources resources;
     private ArrayList<IDCombination> trialList;
     private Button startButton;
-    private View squareTarget;
+    private ImageView squareTarget;
     private RelativeLayout relativeLayout;
 
     @Override
@@ -66,7 +68,7 @@ public class TappingActivity extends AppCompatActivity {
     }
 
     // This is the function that gathers all of the data for our experiment. It is recursive in that tapping on the
-    // startButton causes the square to appear, and then tapping on the square (successful), or elsewhere on the screen (unsuccessful)
+    // startButton causes the square_red to appear, and then tapping on the square_red (successful), or elsewhere on the screen (unsuccessful)
     // causes the beginTrials function to be called. This pattern continues until all the necessary trials have been completed.
     private void beginTrials() {
 
@@ -85,12 +87,12 @@ public class TappingActivity extends AppCompatActivity {
         TextView counter = findViewById(R.id.counter);
         counter.setText(resources.getString(R.string.trial_counter, attemptedTrials, totalTrials));
 
-        // Show the startButton, hide the square target, and put the startButton in a random position
+        // Show the startButton, hide the square_red target, and put the startButton in a random position
         startButton.setVisibility(View.VISIBLE);
 
         final Position startButtonPosition = randomizeViewPosition(startButton);
 
-        // Set an onClick which causes the square of width W and amplitude A away from the startButton to appear given a specified
+        // Set an onClick which causes the square_red of width W and amplitude A away from the startButton to appear given a specified
         // IDCombination
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,49 +111,64 @@ public class TappingActivity extends AppCompatActivity {
                 // Start the timer
                 final double startTime = System.currentTimeMillis();
 
-                // Set an onClick for the "happy path" where the user successfully taps on the square
+                // Set an onClick for the "happy path" where the user successfully taps on the square_red
                 squareTarget.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        squareTarget.setVisibility(View.GONE);
-                        double endTime = System.currentTimeMillis();
-                        double movementTime = endTime - startTime;
+                        //squareTarget.setImageResource(0);
+                        squareTarget.setImageResource(R.drawable.square_green);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                squareTarget.setVisibility(View.GONE);
+                                squareTarget.setImageResource(R.drawable.square_blue);
+                                double endTime = System.currentTimeMillis();
+                                double movementTime = endTime - startTime;
 
-                        String trialData = "{\"result\": \"success\"" +
-                                ", \"amplitude\":" + idCombination.getAmplitude() +
-                                ", \"width\":" + idCombination.getWidth() +
-                                ", \"movement-time\":" + movementTime +
-                                ", \"id-trial-number\":" + idCombination.getAttempted() +
-                                ", \"overall-trial-number\":" + attemptedTrials +
-                                ", \"device\":\"" + device + "\"}\n";
+                                String trialData = "{\"result\": \"success\"" +
+                                        ", \"amplitude\":" + idCombination.getAmplitude() +
+                                        ", \"width\":" + idCombination.getWidth() +
+                                        ", \"movement-time\":" + movementTime +
+                                        ", \"id-trial-number\":" + idCombination.getAttempted() +
+                                        ", \"overall-trial-number\":" + attemptedTrials +
+                                        ", \"device\":\"" + device + "\"}\n";
 
-                        dataWriter.appendResultsToFile(trialData);
-                        idCombination.incrementAttempted();
-                        if (idCombination.completedAllTrials())
-                        {
-                            trialList.remove(idCombination);
-                        }
-                        beginTrials();
+                                dataWriter.appendResultsToFile(trialData);
+                                idCombination.incrementAttempted();
+                                if (idCombination.completedAllTrials())
+                                {
+                                    trialList.remove(idCombination);
+                                }
+                                beginTrials();
+                            }
+                        }, 1000);
                     }
                 });
 
-                // Set an onClick for the "error path" where the user mistaps and misses the square
+                // Set an onClick for the "error path" where the user mistaps and misses the square_red
                 relativeLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        squareTarget.setVisibility(View.GONE);
-                        totalTrials += 1;
-                        String trialData = "{\"result\": \"error\"" +
-                                ", \"amplitude\":" + idCombination.getAmplitude() +
-                                ", \"width\":" + idCombination.getWidth() +
-                                ", \"id-trial-number\":" + idCombination.getAttempted() +
-                                ", \"overall-trial-number\":" + attemptedTrials +
-                                ", \"device\":\"" + device + "\"}\n";
+                        squareTarget.setImageResource(R.drawable.square_red);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                squareTarget.setVisibility(View.GONE);
+                                squareTarget.setImageResource(R.drawable.square_blue);
+                                totalTrials += 1;
+                                String trialData = "{\"result\": \"error\"" +
+                                        ", \"amplitude\":" + idCombination.getAmplitude() +
+                                        ", \"width\":" + idCombination.getWidth() +
+                                        ", \"id-trial-number\":" + idCombination.getAttempted() +
+                                        ", \"overall-trial-number\":" + attemptedTrials +
+                                        ", \"device\":\"" + device + "\"}\n";
 
-                        dataWriter.appendResultsToFile(trialData);
-                        idCombination.incrementTrialCount();
-                        idCombination.incrementAttempted();
-                        beginTrials();
+                                dataWriter.appendResultsToFile(trialData);
+                                idCombination.incrementTrialCount();
+                                idCombination.incrementAttempted();
+                                beginTrials();
+                            }
+                        }, 1000);
                     }
                 });
 

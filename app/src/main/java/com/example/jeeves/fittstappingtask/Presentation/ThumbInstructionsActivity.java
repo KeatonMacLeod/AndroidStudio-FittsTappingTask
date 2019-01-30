@@ -22,7 +22,7 @@ public class ThumbInstructionsActivity extends AppCompatActivity {
 
         //Construct the state object used for the thumb tapping activity
         String device = "thumb";
-        final Intent intent = new Intent(this, TappingActivity.class);
+        final Intent intent = new Intent(ThumbInstructionsActivity.this, TappingActivity.class);
         intent.putExtra("device", device);
 
         Button nextButton = (Button)findViewById(R.id.thumb_instructions_begin_trials_button);

@@ -34,7 +34,7 @@
             android:layout_marginRight="52dp"
             android:layout_toLeftOf="@+id/counter"
             android:layout_toStartOf="@+id/counter"
-            app:srcCompat="@drawable/square" />
+            app:srcCompat="@drawable/square_red" />
 
         <TextView
             android:id="@+id/counter"
