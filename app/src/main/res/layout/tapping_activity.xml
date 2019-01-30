@@ -2,7 +2,6 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,11 +14,6 @@
             android:id="@+id/start_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="54dp"
-            android:layout_marginRight="54dp"
-            android:layout_toLeftOf="@+id/square_target"
-            android:layout_toStartOf="@+id/square_target"
             android:width="150dp"
             android:height="75dp"
             android:text="@string/start" />
@@ -28,12 +22,6 @@
             android:id="@+id/square_target"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="122dp"
-            android:layout_marginEnd="52dp"
-            android:layout_marginRight="52dp"
-            android:layout_toLeftOf="@+id/counter"
-            android:layout_toStartOf="@+id/counter"
             app:srcCompat="@drawable/square" />
 
         <TextView
