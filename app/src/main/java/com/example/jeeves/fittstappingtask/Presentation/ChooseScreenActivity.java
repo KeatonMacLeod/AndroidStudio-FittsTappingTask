@@ -8,20 +8,21 @@ import android.widget.Button;
 
 import com.example.jeeves.fittstappingtask.R;
 
-public class Choose_Screen extends AppCompatActivity {
+public class ChooseScreenActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose__screen);
+        setContentView(R.layout.choose_screen_activity);
+
+        final Intent intent = new Intent(this, ExperimentInstructionsActivity.class);
 
         Button indexFinger = (Button) findViewById(R.id.index_button);
         indexFinger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent startIntent = new Intent(getApplicationContext(), IndexFingerInstructionsActivity.class);
-                startActivity(startIntent);
-
+                intent.putExtra("device", "index");
+                startActivity(intent);
             }
         });
 
@@ -29,10 +30,9 @@ public class Choose_Screen extends AppCompatActivity {
         thumb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent startIntent = new Intent(getApplicationContext(), ThumbInstructionsActivity.class);
-                startActivity(startIntent);
+                intent.putExtra("device", "thumb");
+                startActivity(intent);
             }
         });
-
     }
 }

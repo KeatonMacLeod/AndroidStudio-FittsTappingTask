@@ -20,12 +20,35 @@ public class ExperimentInstructionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.experiment_instructions_activity);
 
+        String device = checkForDevice();
+        final Intent intent;
+
+        if (device.equals("thumb"))
+        {
+            intent = new Intent(this, ThumbInstructionsActivity.class);
+        }
+        else
+        {
+            intent = new Intent(this, IndexFingerInstructionsActivity.class);
+        }
+
         Button nextButton = (Button)findViewById(R.id.experiment_instructions_next_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ExperimentInstructionsActivity.this, Choose_Screen.class));
+                startActivity(intent);
             }
         });
     }
+
+    private String checkForDevice() {
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            Bundle bundle = getIntent().getExtras();
+            if (bundle.getString("device") != null) {
+                return bundle.getString("device");
+            }
+        }
+        return "";
+    }
+
 }

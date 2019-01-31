@@ -30,7 +30,9 @@ public class TappingActivity extends AppCompatActivity {
 
     private int SCREEN_WIDTH = 650;
     private int SCREEN_HEIGHT = 1850;
+    private int feedbackDelay;
     private String device;
+    private String last;
     private DataWriter dataWriter;
     private int attemptedTrials;
     private int totalTrials;
@@ -46,7 +48,13 @@ public class TappingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
+        feedbackDelay = 375;
         device = intent.getExtras().getString("device");
+
+        if (intent.getExtras().getString("last") != null) {
+            last = intent.getExtras().getString("last");
+        }
+
         dataWriter = new DataWriter(this, "experiment-results.txt");
         attemptedTrials = 0;
         totalTrials = 90;
@@ -77,14 +85,35 @@ public class TappingActivity extends AppCompatActivity {
 
         if (trialList.size() == 0)
         {
+            final Intent intent;
+
+            // If this was the last activity, we can start the ClosingRemarksActivity
+            if (last != null)
+            {
+                intent = new Intent(this, ClosingRemarksActivity.class);
+            }
+
+            // If this wasn't the last activity, we need to start the BreakInstructionsActivity
+            // and put the nextDevice in so we know which Activity to start next.
+            else
+            {
+                intent = new Intent(this, BreakInstructionsActivity.class);
+            }
+
+            // Depending on the tappingTask we just did, put the other tapping task "next" in the queue.
             if (device.equals("thumb"))
             {
-                startActivity(new Intent(TappingActivity.this, BreakInstructionsActivity.class));
+                intent.putExtra("device", "index");
             }
             else if (device.equals("index"))
             {
-                startActivity(new Intent(TappingActivity.this, ClosingRemarksActivity.class));
+                intent.putExtra("device", "thumb");
             }
+
+            // Used to determine if this is the last tapping task
+            intent.putExtra("last", "");
+
+            startActivity(intent);
         }
 
         TextView counter = findViewById(R.id.counter);
@@ -146,7 +175,7 @@ public class TappingActivity extends AppCompatActivity {
                                 }
                                 beginTrials();
                             }
-                        }, 1000);
+                        }, feedbackDelay);
                     }
                 });
 
@@ -173,7 +202,7 @@ public class TappingActivity extends AppCompatActivity {
                                 idCombination.incrementAttempted();
                                 beginTrials();
                             }
-                        }, 1000);
+                        }, feedbackDelay);
                     }
                 });
 

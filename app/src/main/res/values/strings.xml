@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FittsTappingTask</string>
+    <string name="app_name">Fitts\' Tap</string>
     <string name="welcome"> Welcome to the Fitts\' Tapping Task! </string>
     <string name="experiment_instructions"> You will perform a series of trials where you will need to tap on a \"Start\" button to cause a target to appear on screen, then you will need to tap on the target to complete the trial.\n\n The targets will have varying sizes, and will be different distances away from the \"Start\" button you tap to begin a trial.</string>
     <string name="thumb_instructions"> In this first set of trials, you will successfully tap on 90 targets while holding the device in your dominant hand, tapping all \"Start\" buttons and targets with your thumb. \n\n After you are holding the device as shown in the picture, tap \"Begin Trials\" </string>
@@ -10,4 +10,7 @@
     <string name="begin_trials"> Begin Trials</string>
     <string name="start"> Start </string>
     <string name="trial_counter"> %d / %d trials</string>
+    <string name="choose_activity_prompt">Experimenter, please choose the first tapping activity the participant will complete. \n\n After selection, hand the device to the participant for the test instructions.</string>
+    <string name="thumb">Thumb</string>
+    <string name="index">Index</string>
 </resources>

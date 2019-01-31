@@ -19,11 +19,27 @@ public class BreakInstructionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.break_instructions_activity);
 
+        Intent passedIntent = getIntent();
+        String device = passedIntent.getExtras().getString("device");
+
+        final Intent intent;
+
+        if (device.equals("thumb"))
+        {
+            intent = new Intent(this, ThumbInstructionsActivity.class);
+        }
+        else
+        {
+            intent = new Intent(this, IndexFingerInstructionsActivity.class);
+        }
+
+        intent.putExtra("last", "finished");
+
         Button nextButton = (Button)findViewById(R.id.break_instructions_next_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(BreakInstructionsActivity.this, IndexFingerInstructionsActivity.class));
+                startActivity(intent);
             }
         });
     }

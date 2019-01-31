@@ -12,7 +12,7 @@ public class IDCombination {
     }
 
     public boolean completedAllTrials() {
-        return attempted >= trialCount;
+        return attempted >= 1;
     }
 
     public int getTotal() {

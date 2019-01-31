@@ -25,6 +25,12 @@ public class ThumbInstructionsActivity extends AppCompatActivity {
         final Intent intent = new Intent(ThumbInstructionsActivity.this, TappingActivity.class);
         intent.putExtra("device", device);
 
+        // Determine if this is the last activity
+        String last = checkForPassedIntent();
+        if (!last.equals("")) {
+            intent.putExtra("last", "");
+        }
+
         Button nextButton = (Button)findViewById(R.id.thumb_instructions_begin_trials_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,5 +38,15 @@ public class ThumbInstructionsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private String checkForPassedIntent() {
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            Bundle bundle = getIntent().getExtras();
+            if (bundle.getString("last") != null) {
+                return bundle.getString("last");
+            }
+        }
+        return "";
     }
 }
