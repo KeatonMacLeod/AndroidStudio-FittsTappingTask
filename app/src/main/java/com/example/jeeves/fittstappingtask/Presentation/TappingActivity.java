@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -47,6 +48,7 @@ public class TappingActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         Intent intent = getIntent();
         feedbackDelay = 375;
         device = intent.getExtras().getString("device");
@@ -67,8 +69,16 @@ public class TappingActivity extends AppCompatActivity {
         startButton = findViewById(R.id.start_button);
         squareTarget = findViewById(R.id.square_target);
         relativeLayout = findViewById(R.id.relative_layout);
+        initDisplayParams();
         initializeTrialList();
         beginTrials();
+    }
+
+    private void initDisplayParams() {
+        SCREEN_WIDTH = Resources.getSystem().getDisplayMetrics().widthPixels - startButton.getWidth();
+        SCREEN_HEIGHT = Resources.getSystem().getDisplayMetrics().heightPixels - startButton.getHeight();
+        Log.d("Tapping", "width:"+SCREEN_WIDTH);
+        Log.d("Tapping", "height:"+SCREEN_HEIGHT);
     }
 
     //Create all of the IDCombinations for the experiment
@@ -149,7 +159,7 @@ public class TappingActivity extends AppCompatActivity {
                 squareTarget.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //squareTarget.setImageResource(0);
+                        if (startButton.getVisibility() == View.VISIBLE) return;
                         squareTarget.setImageResource(R.drawable.square_green);
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -183,6 +193,7 @@ public class TappingActivity extends AppCompatActivity {
                 relativeLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (startButton.getVisibility() == View.VISIBLE) return;
                         squareTarget.setImageResource(R.drawable.square_red);
                         new Handler().postDelayed(new Runnable() {
                             @Override
@@ -217,6 +228,14 @@ public class TappingActivity extends AppCompatActivity {
 
         float xPosition = random.nextFloat() * SCREEN_WIDTH;
         float yPosition = random.nextFloat() * SCREEN_HEIGHT;
+
+        if (xPosition >= (SCREEN_WIDTH - startButton.getWidth())) {
+            xPosition -= startButton.getWidth();
+        }
+
+        if (yPosition >= (SCREEN_HEIGHT - startButton.getHeight())) {
+            yPosition -= startButton.getHeight();
+        }
 
         int[] location = new int[2];
         view.setX(xPosition);
@@ -260,6 +279,15 @@ public class TappingActivity extends AppCompatActivity {
 
         squareTarget.getLayoutParams().height = idCombination.getWidth();
         squareTarget.getLayoutParams().width = idCombination.getWidth();
+
+        if (targetX >= (SCREEN_WIDTH - squareTarget.getWidth())) {
+            targetX -= squareTarget.getWidth();
+        }
+
+        if (targetY >= (SCREEN_HEIGHT - squareTarget.getHeight())) {
+            targetY -= squareTarget.getHeight();
+        }
+
         squareTarget.setX(targetX);
         squareTarget.setY(targetY);
     }
