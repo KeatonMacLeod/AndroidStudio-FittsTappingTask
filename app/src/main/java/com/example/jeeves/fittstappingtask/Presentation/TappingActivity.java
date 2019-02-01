@@ -7,8 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,11 +37,11 @@ public class TappingActivity extends AppCompatActivity {
     private int totalTrials;
     private int[] widths;
     private int[] amplitudes;
+    private boolean circleTargetDisplayingFeedback;
     private Resources resources;
     private ArrayList<IDCombination> trialList;
-
     private CircleImageView startButton;
-    private CircleImageView squareTarget;
+    private CircleImageView circleTarget;
     private RelativeLayout relativeLayout;
 
     @Override
@@ -59,17 +57,17 @@ public class TappingActivity extends AppCompatActivity {
 
         dataWriter = new DataWriter(this, "experiment-results.txt");
         attemptedTrials = 0;
-        totalTrials = 90;
         widths = new int[]{175, 245, 300};
         amplitudes = new int[]{500, 700, 900};
+        circleTargetDisplayingFeedback = false;
         resources = this.getResources();
         trialList = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tapping_activity);
         startButton = findViewById(R.id.start_button);
-        squareTarget = findViewById(R.id.square_target);
+        circleTarget = findViewById(R.id.circle_target);
         relativeLayout = findViewById(R.id.relative_layout);
-        initDisplayParams();
+//        initDisplayParams();
         initializeTrialList();
         beginTrials();
     }
@@ -86,6 +84,8 @@ public class TappingActivity extends AppCompatActivity {
         for (int width: widths)
             for (int amplitude: amplitudes)
                 trialList.add(new IDCombination(width, amplitude));
+
+        totalTrials = trialList.size() * trialList.get(0).getTotal();
     }
 
     // This is the function that gathers all of the data for our experiment. It is recursive in that tapping on the
@@ -129,6 +129,10 @@ public class TappingActivity extends AppCompatActivity {
         TextView counter = findViewById(R.id.counter);
         counter.setText(resources.getString(R.string.trial_counter, attemptedTrials, totalTrials));
 
+        // This ensures that the application doesn't record additional taps after a single successful
+        // or unsuccessful tap on the target / screen.
+        circleTargetDisplayingFeedback = false;
+
         // Show the startButton, hide the square_red target, and put the startButton in a random position
         startButton.setVisibility(View.VISIBLE);
 
@@ -147,7 +151,7 @@ public class TappingActivity extends AppCompatActivity {
                 System.out.println("AMPLITUDE: " + idCombination.getAmplitude() + ", " + "WIDTH: " + idCombination.getWidth());
 
                 startButton.setVisibility(View.GONE);
-                squareTarget.setVisibility(View.VISIBLE);
+                circleTarget.setVisibility(View.VISIBLE);
 
                 // Hide the startButton, set the correct target height + width and make the target visible
                 setTargetPosition(startButtonPosition, idCombination);
@@ -156,36 +160,40 @@ public class TappingActivity extends AppCompatActivity {
                 final double startTime = System.currentTimeMillis();
 
                 // Set an onClick for the "happy path" where the user successfully taps on the square_red
-                squareTarget.setOnClickListener(new View.OnClickListener() {
+                circleTarget.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (startButton.getVisibility() == View.VISIBLE) return;
-                        squareTarget.setImageResource(R.drawable.square_green);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                squareTarget.setVisibility(View.GONE);
-                                squareTarget.setImageResource(R.drawable.square_blue);
-                                double endTime = System.currentTimeMillis();
-                                double movementTime = endTime - startTime;
 
-                                String trialData = "{\"result\": \"success\"" +
-                                        ", \"amplitude\":" + idCombination.getAmplitude() +
-                                        ", \"width\":" + idCombination.getWidth() +
-                                        ", \"movement-time\":" + movementTime +
-                                        ", \"id-trial-number\":" + idCombination.getAttempted() +
-                                        ", \"overall-trial-number\":" + attemptedTrials +
-                                        ", \"device\":\"" + device + "\"}\n";
+                        if (!circleTargetDisplayingFeedback) {
+                            circleTargetDisplayingFeedback = true;
+                            circleTarget.setImageResource(R.drawable.square_green);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    circleTarget.setVisibility(View.GONE);
+                                    circleTarget.setImageResource(R.drawable.square_blue);
+                                    double endTime = System.currentTimeMillis();
+                                    double movementTime = endTime - startTime;
 
-                                dataWriter.appendResultsToFile(trialData);
-                                idCombination.incrementAttempted();
-                                if (idCombination.completedAllTrials())
-                                {
-                                    trialList.remove(idCombination);
+                                    String trialData = "{\"result\": \"success\"" +
+                                            ", \"amplitude\":" + idCombination.getAmplitude() +
+                                            ", \"width\":" + idCombination.getWidth() +
+                                            ", \"movement-time\":" + movementTime +
+                                            ", \"id-trial-number\":" + idCombination.getAttempted() +
+                                            ", \"overall-trial-number\":" + attemptedTrials +
+                                            ", \"device\":\"" + device + "\"}\n";
+
+                                    dataWriter.appendResultsToFile(trialData);
+                                    idCombination.incrementAttempted();
+                                    if (idCombination.completedAllTrials())
+                                    {
+                                        trialList.remove(idCombination);
+                                    }
+                                    beginTrials();
                                 }
-                                beginTrials();
-                            }
-                        }, feedbackDelay);
+                            }, feedbackDelay);
+                        }
                     }
                 });
 
@@ -194,26 +202,30 @@ public class TappingActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         if (startButton.getVisibility() == View.VISIBLE) return;
-                        squareTarget.setImageResource(R.drawable.square_red);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                squareTarget.setVisibility(View.GONE);
-                                squareTarget.setImageResource(R.drawable.square_blue);
-                                totalTrials += 1;
-                                String trialData = "{\"result\": \"error\"" +
-                                        ", \"amplitude\":" + idCombination.getAmplitude() +
-                                        ", \"width\":" + idCombination.getWidth() +
-                                        ", \"id-trial-number\":" + idCombination.getAttempted() +
-                                        ", \"overall-trial-number\":" + attemptedTrials +
-                                        ", \"device\":\"" + device + "\"}\n";
 
-                                dataWriter.appendResultsToFile(trialData);
-                                idCombination.incrementTrialCount();
-                                idCombination.incrementAttempted();
-                                beginTrials();
-                            }
-                        }, feedbackDelay);
+                        if (!circleTargetDisplayingFeedback) {
+                            circleTargetDisplayingFeedback = true;
+                            circleTarget.setImageResource(R.drawable.square_red);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    circleTarget.setVisibility(View.GONE);
+                                    circleTarget.setImageResource(R.drawable.square_blue);
+                                    totalTrials += 1;
+                                    String trialData = "{\"result\": \"error\"" +
+                                            ", \"amplitude\":" + idCombination.getAmplitude() +
+                                            ", \"width\":" + idCombination.getWidth() +
+                                            ", \"id-trial-number\":" + idCombination.getAttempted() +
+                                            ", \"overall-trial-number\":" + attemptedTrials +
+                                            ", \"device\":\"" + device + "\"}\n";
+
+                                    dataWriter.appendResultsToFile(trialData);
+                                    idCombination.incrementTrialCount();
+                                    idCombination.incrementAttempted();
+                                    beginTrials();
+                                }
+                            }, feedbackDelay);
+                        }
                     }
                 });
 
@@ -229,13 +241,13 @@ public class TappingActivity extends AppCompatActivity {
         float xPosition = random.nextFloat() * SCREEN_WIDTH;
         float yPosition = random.nextFloat() * SCREEN_HEIGHT;
 
-        if (xPosition >= (SCREEN_WIDTH - startButton.getWidth())) {
-            xPosition -= startButton.getWidth();
-        }
-
-        if (yPosition >= (SCREEN_HEIGHT - startButton.getHeight())) {
-            yPosition -= startButton.getHeight();
-        }
+//        if (xPosition >= (SCREEN_WIDTH - startButton.getWidth())) {
+//            xPosition -= startButton.getWidth();
+//        }
+//
+//        if (yPosition >= (SCREEN_HEIGHT - startButton.getHeight())) {
+//            yPosition -= startButton.getHeight();
+//        }
 
         int[] location = new int[2];
         view.setX(xPosition);
@@ -277,19 +289,19 @@ public class TappingActivity extends AppCompatActivity {
                 onScreen = true;
         }
 
-        squareTarget.getLayoutParams().height = idCombination.getWidth();
-        squareTarget.getLayoutParams().width = idCombination.getWidth();
+        circleTarget.getLayoutParams().height = idCombination.getWidth();
+        circleTarget.getLayoutParams().width = idCombination.getWidth();
 
-        if (targetX >= (SCREEN_WIDTH - squareTarget.getWidth())) {
-            targetX -= 2 * squareTarget.getWidth();
-        }
+//        if (targetX >= (SCREEN_WIDTH - circleTarget.getWidth())) {
+//            targetX -= 2 * circleTarget.getWidth();
+//        }
+//
+//        if (targetY >= (SCREEN_HEIGHT - circleTarget.getHeight())) {
+//            targetY -= 2 * circleTarget.getHeight();
+//        }
 
-        if (targetY >= (SCREEN_HEIGHT - squareTarget.getHeight())) {
-            targetY -= 2 * squareTarget.getHeight();
-        }
-
-        squareTarget.setX(targetX);
-        squareTarget.setY(targetY);
+        circleTarget.setX(targetX);
+        circleTarget.setY(targetY);
     }
 
     private boolean targetFullyOnScreen(float targetX, float targetY) {
