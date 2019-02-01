@@ -281,11 +281,11 @@ public class TappingActivity extends AppCompatActivity {
         squareTarget.getLayoutParams().width = idCombination.getWidth();
 
         if (targetX >= (SCREEN_WIDTH - squareTarget.getWidth())) {
-            targetX -= squareTarget.getWidth();
+            targetX -= 2 * squareTarget.getWidth();
         }
 
         if (targetY >= (SCREEN_HEIGHT - squareTarget.getHeight())) {
-            targetY -= squareTarget.getHeight();
+            targetY -= 2 * squareTarget.getHeight();
         }
 
         squareTarget.setX(targetX);
