@@ -28,7 +28,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class TappingActivity extends AppCompatActivity {
 
     private int SCREEN_WIDTH = 650;
-    private int SCREEN_HEIGHT = 1850;
+    private int SCREEN_HEIGHT = 1800;
     private int feedbackDelay;
     private String device;
     private String last;
@@ -57,8 +57,8 @@ public class TappingActivity extends AppCompatActivity {
 
         dataWriter = new DataWriter(this, "experiment-results.txt");
         attemptedTrials = 0;
-        widths = new int[]{175, 245, 300};
-        amplitudes = new int[]{500, 700, 900};
+        widths = new int[]{110, 200, 375};
+        amplitudes = new int[]{200, 400, 700};
         circleTargetDisplayingFeedback = false;
         resources = this.getResources();
         trialList = new ArrayList<>();

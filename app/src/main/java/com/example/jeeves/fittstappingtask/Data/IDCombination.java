@@ -1,7 +1,7 @@
 package com.example.jeeves.fittstappingtask.Data;
 
 public class IDCombination {
-    private int trialCount = 1;
+    private int trialCount = 15;
     private int attempted = 0;
     private int amplitude;
     private int width;
