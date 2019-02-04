@@ -5,7 +5,7 @@ import numpy as np
 def populate_data_dictionary():
     thumb_data = {}
     index_data = {}
-    with open("data.txt", "r") as f:
+    with open("all-data.txt", "r") as f:
         all_lines = f.readlines()
         for line in all_lines:
             result_dict = literal_eval(line)
