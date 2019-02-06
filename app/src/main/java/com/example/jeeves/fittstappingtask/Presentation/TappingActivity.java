@@ -27,8 +27,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TappingActivity extends AppCompatActivity {
 
-    private int SCREEN_WIDTH = 650;
-    private int SCREEN_HEIGHT = 1800;
+    private int SCREEN_WIDTH = 625;
+    private int SCREEN_HEIGHT = 1750;
     private int feedbackDelay;
     private String device;
     private String last;
@@ -57,8 +57,8 @@ public class TappingActivity extends AppCompatActivity {
 
         dataWriter = new DataWriter(this, "experiment-results.txt");
         attemptedTrials = 0;
-        widths = new int[]{110, 200, 375};
-        amplitudes = new int[]{200, 400, 700};
+        widths = new int[]{115, 215, 430};
+        amplitudes = new int[]{600, 900, 1500};
         circleTargetDisplayingFeedback = false;
         resources = this.getResources();
         trialList = new ArrayList<>();
@@ -236,10 +236,20 @@ public class TappingActivity extends AppCompatActivity {
 
     private Position randomizeViewPosition(View view) {
 
+        int topBottomRegionOffset = 150;
+        boolean withinTopOrBottomRegion = false;
         Random random = new Random();
 
         float xPosition = random.nextFloat() * SCREEN_WIDTH;
-        float yPosition = random.nextFloat() * SCREEN_HEIGHT;
+        float yPosition = -1;
+
+        while (!withinTopOrBottomRegion)
+        {
+            yPosition = random.nextFloat() * SCREEN_HEIGHT;
+
+            if (yPosition >= SCREEN_HEIGHT - topBottomRegionOffset || yPosition < topBottomRegionOffset)
+                withinTopOrBottomRegion = true;
+        }
 
 //        if (xPosition >= (SCREEN_WIDTH - startButton.getWidth())) {
 //            xPosition -= startButton.getWidth();
@@ -247,12 +257,10 @@ public class TappingActivity extends AppCompatActivity {
 //
 //        if (yPosition >= (SCREEN_HEIGHT - startButton.getHeight())) {
 //            yPosition -= startButton.getHeight();
-//        }
+//        }op
 
-        int[] location = new int[2];
         view.setX(xPosition);
         view.setY(yPosition);
-        view.getLocationInWindow(location);
 
         return new Position(xPosition, yPosition);
     }
