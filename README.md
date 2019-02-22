@@ -2,6 +2,8 @@
 
 This android application allows University students to test whether a thumb, or index finger has better throughput on a mobile device utilizing Fitts' Law.
 
+The ability to select thumb or index finger tests, instructions on how to complete the tasks, and logging of the user's completion times and error rates are all done for you. 
+
 The experimenter selects which trial they want to have their user perform, and then the rest is taken care of by the application.
 
 User's are prompted with instructions on how to complete the tasks via Activity class.
